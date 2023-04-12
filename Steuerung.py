@@ -10,8 +10,9 @@ from ChemTherm_library.Verdampfer_lib import *
 def tk_loop():   
       
     if running_Json == 1:
-        T_set, MFC_set,t_end,section = json_timing(config,section,t0)
+        T_set, MFC_set, t_end,section, t_section = json_timing(config,section,t0)
         lable_timer.configure(text = str("{0:.2f}").format(t_end/60)+" min")
+        lable_timerSection.configure(text = str("{0:.2f}").format(t_section/60)+" min")
         for i in set_T:
             set_T[i].delete(0, tk.END)
             set_T[i].insert(0,str("{0:.2f}").format(T_set[i]))
@@ -25,8 +26,8 @@ def tk_loop():
 
     for tc_obj_name in tc_list:
         lable_T_ist[tc_obj_name].configure(text = str(tc_list[tc_obj_name].t)+" °C")
-    for p_obj_name in patronen_list:   
-        progressbar[p_obj_name].set(patronen_list[p_obj_name].pwroutput/100)
+    for p_obj_name in Heater_list:   
+        progressbar[p_obj_name].set(Heater_list[p_obj_name].pwroutput/100)
 
     MFC_1.get()
     value_MFC[0].configure(text = str(MFC_1.Voltage) + " mV") 
@@ -198,6 +199,9 @@ for num, i in enumerate(option_Heat):
 
 lable_timer = ctk.CTkLabel(master = lf_control , font = ('Arial',16), text='0 min')
 lable_timer.grid(column=1, row=2)
+lable_timerSection = ctk.CTkLabel(master = lf_control , font = ('Arial',16), text='0 min')
+lable_timerSection.grid(column=1, row=3)
+
 #----------- Buttons -----------
 button1 = tk.Button(lf_control,text='Set Values', command=getdata, bg='brown', fg='white')
 button1.grid(column=1, row=0, ipadx=8, ipady=8)
