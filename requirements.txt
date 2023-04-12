@@ -1,0 +1,7 @@
+#python -m venv venv
+#.\venv\Scripts\activate WINDOWS
+# source ./venv/bin/activate LINUX
+#pip install -r requirements.txt
+tinkerforge == 2.1.30
+Pillow 
+customtkinter 

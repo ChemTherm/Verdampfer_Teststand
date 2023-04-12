@@ -1,0 +1,3 @@
+[submodule "ChemTherm_library"]
+	path = ChemTherm_library
+	url = https://github.com/ChemTherm/ChemTherm_library

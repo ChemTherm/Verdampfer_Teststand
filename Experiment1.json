@@ -1,0 +1,44 @@
+{
+    "PATH":{
+        "SaveFile": "./results"
+    },
+
+    "EVAP":{
+        "Name": "Verdampfer Teststand",
+        "amount": 1
+    },
+    "MFC":{
+        "amount":1,
+        "name": ["N2"]
+    },
+
+    "TIMING":{
+        "NoSections": 9,
+        "t":         [0,    5400,   1800,   3600,   18000,  1800,   1800,   900,    14400],  
+        "T_set1":     [20,   850,    850,    986,    986,    850,    1000,   1000,   20],
+        "MFC":    [0,    3750,   3750,   0,      0,      3750,   1250,   0,      3750],
+        "Comment":"Jede Spalte steht für eine Zeitphase t in Sekunden, die Temperatur MFC Einstellungen in mV"  
+    },
+        
+     "TKINTER":{
+        "background-color": "#F2F2F2",
+        "tabpadx": 50,
+        "font-size": 22,    
+        "name": "./img/Evap.png",
+        "width": 624,
+        "height": 862,
+        "factor": 1,
+        "x": 600,
+        "y": 100    
+    },
+    
+    "T-Set":{
+        "x":[250 ],
+        "y":[590],
+        "Kommentar": "Position der T-Set für jede Zone pro Reaktor"
+    },
+    "T-Value":{
+        "x": [ 50 , 50 ,50],
+        "y": [ 570, 440, 310]
+    }
+}
