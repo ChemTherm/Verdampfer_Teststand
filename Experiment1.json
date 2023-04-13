@@ -9,15 +9,18 @@
     },
     "MFC":{
         "amount":1,
-        "name": ["N2"]
+        "name": ["CA"]
     },
 
     "TIMING":{
-        "NoSections": 9,
-        "t":         [0,    5400,   1800,   3600,   18000,  1800,   1800,   900,    14400],  
-        "T_set1":     [20,   850,    850,    986,    986,    850,    1000,   1000,   20],
-        "MFC":    [0,    3750,   3750,   0,      0,      3750,   1250,   0,      3750],
-        "Comment":"Jede Spalte steht für eine Zeitphase t in Sekunden, die Temperatur MFC Einstellungen in mV"  
+        "NoSections": 3,
+        "t":         [0,    180,   180],
+        "T_interp": [0, 0 0],  
+        "T_Soll1":     [20,   80 ,    80],
+        "T_Soll2":     [0,   0 ,    0],
+        "T_Soll3":     [0,   0 ,    0],
+        "MFC":    [0,    3750,   3750],
+        "Comment":"Jede Spalte steht für eine Zeitphase t in Sekunden, die Temperatur MFC Einstellungen in mV, T-interp = 0 > konstante Temperattur"  
     },
         
      "TKINTER":{
@@ -29,7 +32,7 @@
         "height": 862,
         "factor": 1,
         "x": 600,
-        "y": 100    
+        "y": 200    
     },
     
     "T-Set":{
@@ -38,7 +41,7 @@
         "Kommentar": "Position der T-Set für jede Zone pro Reaktor"
     },
     "T-Value":{
-        "x": [ 50 , 50 ,50],
+        "x": [ 120 , 120 ,120],
         "y": [ 570, 440, 310]
     }
 }
