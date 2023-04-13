@@ -1,0 +1,47 @@
+{
+    "PATH":{
+        "SaveFile": "./results"
+    },
+
+    "EVAP":{
+        "Name": "Verdampfer Teststand",
+        "amount": 1
+    },
+    "MFC":{
+        "amount":1,
+        "name": ["CA"]
+    },
+
+    "TIMING":{
+        "NoSections": 16,
+        "t":         [1200,  900,    900,    900,    900,    900,    900,    900,    1200,    900,    900,    900,    900,    900,    900,    900],
+        "T_interp":  [0,    0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0],  
+        "T_Soll1":   [160,  160 ,   160,    160,    160,    160,    160,    160,    240,    240,    240,    240,    240,    240,    240,    240],
+        "T_Soll2":   [0,    0 ,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0],
+        "T_Soll3":   [0,    0 ,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0],
+        "MFC":       [300,  400,    500,    600,    700,    800,    900,    1000,   300,  400,    500,    600,    700,    800,    900,    1000],
+        "Comment":"Jede Spalte steht für eine Zeitphase t in Sekunden, die Temperatur MFC Einstellungen in mV, T-interp = 0 > konstante Temperattur"  
+    },
+        
+     "TKINTER":{
+        "background-color": "#F2F2F2",
+        "tabpadx": 50,
+        "font-size": 22,    
+        "name": "./img/Evap.png",
+        "width": 624,
+        "height": 862,
+        "factor": 1,
+        "x": 600,
+        "y": 200    
+    },
+    
+    "T-Set":{
+        "x":[250 ],
+        "y":[590],
+        "Kommentar": "Position der T-Set für jede Zone pro Reaktor"
+    },
+    "T-Value":{
+        "x": [ 190 , 190 ,190],
+        "y": [ 570, 240, 110]
+    }
+}

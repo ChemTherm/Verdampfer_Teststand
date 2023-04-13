@@ -13,13 +13,13 @@
     },
 
     "TIMING":{
-        "NoSections": 3,
-        "t":         [0,    180,   180],
-        "T_interp": [0, 0 0],  
-        "T_Soll1":     [20,   80 ,    80],
-        "T_Soll2":     [0,   0 ,    0],
-        "T_Soll3":     [0,   0 ,    0],
-        "MFC":    [0,    3750,   3750],
+        "NoSections": 8,
+        "t":         [900,  900,    900,    900,    900,    900,    900,    900],
+        "T_interp":  [0,    0,      0,      0,      0,      0,      0,      0],  
+        "T_Soll1":   [160,  160 ,   160,    160,    240,    240,    240,    240],
+        "T_Soll2":   [0,    0 ,     0,      0,      0,      0,      0,      0],
+        "T_Soll3":   [0,    0 ,     0,      0,      0,      0,      0,      0],
+        "MFC":       [200,  400,    600,    800,    200,    400,    600,    800],
         "Comment":"Jede Spalte steht für eine Zeitphase t in Sekunden, die Temperatur MFC Einstellungen in mV, T-interp = 0 > konstante Temperattur"  
     },
         
@@ -41,7 +41,7 @@
         "Kommentar": "Position der T-Set für jede Zone pro Reaktor"
     },
     "T-Value":{
-        "x": [ 120 , 120 ,120],
-        "y": [ 570, 440, 310]
+        "x": [ 190 , 190 ,190],
+        "y": [ 570, 240, 110]
     }
 }

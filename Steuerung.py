@@ -9,13 +9,10 @@ from ChemTherm_library.Verdampfer_lib import *
 
 def tk_loop():   
     global section
-
     if running_json == 1:
         T_set, MFC_set, t_end, section, t_section = json_timing(config,section,t0)
         lable_timer.configure(text = str("{0:.2f}").format(t_end/60)+" min")
-        lable_timerSection.configure(text = str("{0:.2f}").format(t_section/60)+" min")
-        print(T_set)
-        
+        lable_timerSection.configure(text = str("{0:.2f}").format(t_section/60)+" min")        
         for num, i in enumerate(option_Heat):
             set_T[i].delete(0, tk.END)
             set_T[i].insert(0,str("{0:.2f}").format(T_set[num]))
@@ -24,7 +21,7 @@ def tk_loop():
         for num, i in enumerate(option_Heat):
             set_MFC[i].delete(0, tk.END)
             set_MFC[i].insert(0,str(MFC_set[num]))
-            
+
         getdata()         
         if (t_end < 0):
             Stop_Button_callback()  
@@ -34,12 +31,26 @@ def tk_loop():
     for tc_obj_name in tc_list:
         lable_T_ist[tc_obj_name].configure(text = str(tc_list[tc_obj_name].t)+" °C")
     for p_obj_name in Heater_list:   
-        progressbar[p_obj_name].set(Heater_list[p_obj_name].pwroutput/100)
+        progressbar[p_obj_name].set(Heater_list[p_obj_name].pwroutput)
+        value_Heat[p_obj_name].configure(text = str("{0:.2f}").format(Heater_list[p_obj_name].pwroutput*100)+" %")    
     for press_obj_name in pressure_list:
         value_pressure[press_obj_name].configure(text = str(pressure_list[press_obj_name].Voltage) + " mV")
 
     MFC_1.get()
     value_MFC[option_MFC[0]].configure(text = str(MFC_1.Voltage) + " mV")     
+
+    
+    with open(filename, 'a') as f:
+        line = ' ' + datetime.now().strftime("%H:%M:%S.%f\t")
+        for tc_obj_name in tc_list:
+            line += str(tc_list[tc_obj_name].t) + '\t'
+        for p_obj_name in Heater_list:
+            line += str(Heater_list[p_obj_name].pwroutput) + '\t'  
+        for press_obj_name in pressure_list:
+            line += str(pressure_list[press_obj_name].Voltage) + " \t"
+        line += str(set_MFC[option_MFC[0]].get()) + ' \t '+ str(MFC_1.Voltage) + ' \t '
+        line += ' \n'
+        f.writelines(line)
 
     Heater1.regeln()
     window.after(500, tk_loop)
@@ -49,16 +60,20 @@ def getdata():
     for num, i in enumerate(option_Heat):
         if set_T[i].get() != '':
             Heater1.set_t_soll(float(set_T[i].get()))
+        if set_Kp[i].get() != '':
+            Heater1.config(float(set_Ki[i].get()), float(set_Kp[i].get()))
 
     
     for num, i in enumerate(option_MFC):
         if set_MFC[i].get() != '':
             MFC_1.set(int(set_MFC[i].get()))
 
+
+
 def Start_Button_callback():
     global section, running_json, t0
     running_json = 1
-    section = 1
+    section = 0
     t0 = time.time()
     Start_Button.configure(state = "disabled")
 
@@ -84,12 +99,18 @@ PORT = 4223
 ipcon = IPConnection() # Create IP connection
 ipcon.connect(HOST, PORT) # Connect to brickd
 
+filename = "20230413_Experiment1_0.1ml_FTIR.dat"
+
+with open(filename, 'w') as f:
+    headline = "time \t T1 \t T2 \t T3 \t H1 \t  p1 \t p2 \t MFC_soll \t MFC_ist \n"
+    f.writelines(headline)
+
 ''''
 ====================================
 JSON
 ====================================
 '''
-json_name="Experiment1"
+json_name="20230413_Experiment1_0.1ml_FTIR"
 
 with open(json_name +'.json', 'r') as config_file:
     config = json.load(config_file)
@@ -107,8 +128,10 @@ tc_list = {'T1':tc_1,'T2':tc_2,'T3':tc_3}
 
 OutHeat = BrickletIndustrialDigitalOut4V2("Tn6", ipcon)
 
-Heater1 = regler(OutHeat,0,tc_1)
-Heater1.config(0.000007, 0.015)
+Heater1 = regler(OutHeat,0,tc_2)
+Ki = 0.00007
+Kp = 0.0015
+Heater1.config(Ki, Kp)
 Heater1.start(0)
 Heater_list = {'H1':Heater1}
 
@@ -165,6 +188,11 @@ lf_control = tk.LabelFrame(window, text='Steuerung')
 lf_control.grid(column=0, row=1, padx=20, pady=20)
 
 
+
+lf_controlHeat = tk.LabelFrame(window, text='Heizung',font=('Arial',16))
+lf_controlHeat.grid(column=0, row=1, padx=20, pady=20)
+lf_controlHeat.place(x= 200,y= 240)
+
 option = ['T1','T2','T3']
 option_pressure = ['p1','p2']
 option_Heat = ['H1']
@@ -173,15 +201,31 @@ option_MFC = ['H1']
 lable_T_ist ={}
 progressbar ={}   
 set_T ={}
+set_Kp={}
+set_Ki={}
+value_Heat={}
+label_Heater ={}
 for num, i in enumerate(option):
     lable_T_ist[i] = ctk.CTkLabel(window, font = ('Arial',16), text='0 °C')
     lable_T_ist[i].place(x = x_offset + config['T-Value']['x'][num],y = y_offset + config['T-Value']['y'][num])
 
 for num, i in enumerate(option_Heat):
     progressbar[i] = ctk.CTkProgressBar(master=window, width = 80, progress_color = 'red')
-    progressbar[i] .place(x = x_offset + config['T-Value']['x'][num]-8,y = y_offset + config['T-Value']['y'][num]+30)
-    set_T[i] = tk.Entry(window, font = ('Arial',16), width = 6,bg='light blue' )
-    set_T[i].place(x = x_offset + config['T-Set']['x'][num],y = y_offset + config['T-Set']['y'][num])
+    progressbar[i] .place(x = x_offset + config['T-Value']['x'][num]-8,y = y_offset + config['T-Value']['y'][num]+30)   
+    label_Heater[i]=ctk.CTkLabel(lf_controlHeat, font = ('Arial',16), text = option_Heat[num])
+    label_Heater[i].grid(column=0, row=num, padx=10, ipady=5)
+    set_T[i] = ctk.CTkEntry(lf_controlHeat, font = ('Arial',16),bg_color='light blue' )
+    set_T[i].grid(column=1, row=num, padx=10, ipady=5)
+    value_Heat[i]= ctk.CTkLabel(lf_controlHeat, font = ('Arial',16), text = "0 %")
+    value_Heat[i].grid(column=1, row=num+1, ipadx=5, ipady=5) 
+
+    set_Kp[i] = ctk.CTkEntry(lf_controlHeat, font = ('Arial',16))
+    set_Kp[i].grid(column=2, row=num, ipadx=5, ipady=5)
+    set_Kp[i].insert(0,str("{0:.6f}").format(Kp))
+    set_Ki[i] = ctk.CTkEntry(lf_controlHeat, font = ('Arial',16))
+    set_Ki[i].grid(column=2, row=num+1, ipadx=5, ipady=5)
+    set_Ki[i].insert(0,str("{0:.6f}").format(Ki))
+    #set_T[i].place(x = x_offset + config['T-Set']['x'][num],y = y_offset + config['T-Set']['y'][num])
 
 lable_pressure = {}; value_pressure={}
 
@@ -199,6 +243,7 @@ for num, i in enumerate(option_MFC):
     name_MFC[i].grid(column=0, row=num+1, ipadx=5, ipady=5)
     set_MFC[i] = tk.Entry(lf_MFC, font = ('Arial',16), width = 6 )
     set_MFC[i].grid(column=1, row=num+1, ipadx=5, ipady=5)
+    set_MFC[i].insert(0,str("{0:.0f}").format(0))
     unit_MFC[i]= ctk.CTkLabel(lf_MFC, font = ('Arial',16), text=' mV')
     unit_MFC[i].grid(column=2, row=num+1, ipadx=5, ipady=5)
     value_MFC[i]= ctk.CTkLabel(lf_MFC, font = ('Arial',16), text='0 mV')
